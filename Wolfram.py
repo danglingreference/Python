@@ -60,7 +60,6 @@ def main():
            generations += 1
         screen.getcanvas().postscript(file="Rule"+str(rule)+".eps")
         screen.exitonclick()
-
     else:
         raise Exception("Se espera un argumento")
 if __name__ == '__main__':
