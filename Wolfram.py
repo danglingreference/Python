@@ -59,7 +59,7 @@ def main():
                    filled_rectangle("black", t, -380+j*cell_size, 336-generations*cell_size, cell_size, cell_size)
 
            generations += 1
-        screen.getcanvas().postscript(file="110.eps")
+        screen.getcanvas().postscript(file="Rule"+str(rule)+".eps")
         screen.exitonclick()
 
     else:
