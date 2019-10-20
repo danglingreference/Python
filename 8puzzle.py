@@ -1,10 +1,11 @@
 class Nodo:
-    def __init__(self, mat, h, nivel, fz, cz):
+    def __init__(self, mat, h, nivel, fz, cz, padre):
         self.nivel = nivel
         self.f_n = h + nivel
         self.mat = mat
         self.fz = fz
         self.cz = cz
+        self.padre = padre
 def main():
     n = 3
     estado_inicial = [[1, 8, 2], [0, 4, 3], [7, 6, 5]]
@@ -43,22 +44,22 @@ def main():
             mat = copiar(nodo_padre.mat)
             mat[fz][cz] = mat[fz+1][cz]
             mat[fz+1][cz] = 0
-            hijos.append(Nodo(mat, distanciaManhattan(mat, objetivo), nodo_padre.nivel+1, fz+1, cz))
+            hijos.append(Nodo(mat, distanciaManhattan(mat, objetivo), nodo_padre.nivel+1, fz+1, cz, nodo_padre))
         if fz - 1 >= 0:
             mat = copiar(nodo_padre.mat)
             mat[fz][cz] = mat[fz-1][cz]
             mat[fz-1][cz] = 0
-            hijos.append(Nodo(mat, distanciaManhattan(mat, objetivo), nodo_padre.nivel+1, fz-1, cz))
+            hijos.append(Nodo(mat, distanciaManhattan(mat, objetivo), nodo_padre.nivel+1, fz-1, cz, nodo_padre))
         if cz + 1 < n:
             mat = copiar(nodo_padre.mat)
             mat[fz][cz] = mat[fz][cz+1]
             mat[fz][cz+1] = 0
-            hijos.append(Nodo(mat, distanciaManhattan(mat, objetivo), nodo_padre.nivel+1, fz, cz+1))
+            hijos.append(Nodo(mat, distanciaManhattan(mat, objetivo), nodo_padre.nivel+1, fz, cz+1, nodo_padre))
         if cz - 1 >= 0:
             mat = copiar(nodo_padre.mat)
             mat[fz][cz] = mat[fz][cz-1]
             mat[fz][cz-1] = 0
-            hijos.append(Nodo(mat, distanciaManhattan(mat, objetivo), nodo_padre.nivel+1, fz, cz-1))
+            hijos.append(Nodo(mat, distanciaManhattan(mat, objetivo), nodo_padre.nivel+1, fz, cz-1, nodo_padre))
         return hijos
     def elegir(nodos):
         index = 0
@@ -85,22 +86,25 @@ def main():
             if sonIguales(n.mat, nodo.mat):
                 return n
         return None
-    nodo_inicial = Nodo(estado_inicial, distanciaManhattan(estado_inicial, objetivo), 0, fz, cz)
+    def recorrer(nodo):
+        if nodo != None:
+            recorrer(nodo.padre)
+            imp(nodo.mat)
+    nodo_inicial = Nodo(estado_inicial, distanciaManhattan(estado_inicial, objetivo), 0, fz, cz, None)
     open_list = []
     closed_list = []
     open_list.append(nodo_inicial)
     while len(open_list) > 0:
         elegido = open_list[0]
         closed_list.append(elegido)
-        imp(elegido.mat)
         if sonIguales(elegido.mat, objetivo):
-            imp(elegido.mat)
+            print("Solucionado")
             break
         hijos = expandir(elegido, elegido.fz, elegido.cz)
         for h in hijos:
            open_list.append(h)
         del open_list[0]
         open_list.sort(key = lambda x : x.f_n, reverse = False)
-        
+    recorrer(elegido)
 if __name__ == "__main__":
     main()
